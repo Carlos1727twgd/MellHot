@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mellhot - Conteúdo Exclusivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #000000 0%, #ec4899 100%);
+        }
+        .hover-scale {
+            transition: transform 0.3s ease;
+        }
+        .hover-scale:hover {
+            transform: scale(1.05);
+        }
+        .text-stroke {
+            -webkit-text-stroke: 1px #ffffff;
+            text-stroke: 1px #ffffff;
+        }
+        .glow {
+            box-shadow: 0 0 15px rgba(236, 72, 153, 0.7);
+        }
+        .border-glow {
+            box-shadow: 0 0 0 2px rgba(236, 72, 153, 0.7);
+        }
+        .border-glow:hover {
+            box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.9);
+        }
+        .blur-image {
+            filter: blur(8px);
+            transition: filter 0.3s ease;
+        }
+        .no-blur {
+            filter: blur(0);
+        }
+        .age-gate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #000000 0%, #ec4899 100%);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        .timer {
+            font-size: 24px;
+            margin-top: 20px;
+            color: #ff0000;
+            font-weight: bold;
+        }
+        .hidden-content {
+            display: none;
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .mell-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 0.75rem;
+        }
+        .image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 0.75rem;
+        }
+        .image-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%);
+            padding: 1rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .image-container:hover .image-overlay {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-black text-white font-sans">
+    <!-- Age Verification Gate -->
+    <div id="age-gate" class="age-gate">
+        <div class="max-w-md mx-auto">
+            <h1 class="text-4xl md:text-5xl font-bold mb-8">
+                <span class="text-pink-500">MELL</span>
+                <span class="text-white">HOT</span>
+            </h1>
+            <p class="text-xl mb-8">Este site contém conteúdo adulto exclusivo para maiores de 18 anos</p>
+            <p class="text-lg mb-8">Você é maior de 18 anos?</p>
+            
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+                <button id="btn-yes" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-full transition hover-scale glow">
+                    Sim, sou maior de 18
+                </button>
+                <button id="btn-no" class="border-2 border-pink-600 text-pink-400 hover:bg-pink-900/30 font-bold py-3 px-8 rounded-full transition hover-scale border-glow">
+                    Não, sou menor
+                </button>
+            </div>
+            
+            <div id="minor-message" class="hidden">
+                <p class="text-2xl mb-4">Volte quando for adulto, bebê...</p>
+                <p id="timer" class="timer">10</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content (hidden by default) -->
+    <div id="main-content" class="hidden-content">
+        <!-- Header/Navbar -->
+        <header class="gradient-bg sticky top-0 z-50">
+            <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-pink-500">MELL</span>
+                    <span class="text-2xl font-bold text-white">HOT</span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <a href="#about" class="text-white hover:text-pink-400 transition">Sobre</a>
+                    <a href="#content" class="text-white hover:text-pink-400 transition">Conteúdo</a>
+                    <a href="#gallery" class="text-white hover:text-pink-400 transition">Galeria</a>
+                    <a href="#faq" class="text-white hover:text-pink-400 transition">Dúvidas</a>
+                </nav>
+                <div class="md:hidden">
+                    <button id="menu-toggle" class="text-white focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- Mobile menu -->
+            <div id="mobile-menu" class="hidden md:hidden bg-black py-4 px-4">
+                <a href="#about" class="block py-2 text-white hover:text-pink-400">Sobre</a>
+                <a href="#content" class="block py-2 text-white hover:text-pink-400">Conteúdo</a>
+                <a href="#gallery" class="block py-2 text-white hover:text-pink-400">Galeria</a>
+                <a href="#faq" class="block py-2 text-white hover:text-pink-400">Dúvidas</a>
+            </div>
+        </header>
+
+        <!-- Hero Section -->
+        <section class="relative h-screen flex items-center justify-center overflow-hidden">
+            <div class="absolute inset-0 bg-black opacity-60"></div>
+            <div class="absolute inset-0">
+                <div class="h-full w-full bg-gradient-to-r from-black via-transparent to-black"></div>
+            </div>
+            <div class="container mx-auto px-4 z-10 text-center">
+                <h1 class="text-5xl md:text-7xl font-bold mb-6">
+                    <span class="text-pink-500">MELL</span>
+                    <span class="text-white">HOT</span>
+                </h1>
+                <p class="text-xl md:text-2xl mb-8 text-gray-300 max-w-2xl mx-auto">Fotos sensuais e conteúdo adulto exclusivo postado mensalmente para deixar qualquer um duro!</p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#subscribe" class="bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-full transition hover-scale glow">Acessar Conteúdo</a>
+                    <a href="#gallery" class="border-2 border-pink-600 text-pink-400 hover:bg-pink-900/30 font-bold py-3 px-8 rounded-full transition hover-scale border-glow">Ver Galeria</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="py-20 bg-gradient-to-b from-black via-gray-900 to-black">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row items-center gap-8">
+                    <div class="md:w-1/2 mb-10 md:mb-0">
+                        <h2 class="text-4xl font-bold mb-6">
+                            <span class="text-pink-500">Sobre</span>
+                            <span class="text-white">Mell</span>
+                        </h2>
+                        <p class="text-gray-300 mb-4 text-lg">Olá, sou Mell! Uma criadora de conteúdo e fotos íntimas para quem valoriza qualidade.</p>
+                        <p class="text-gray-300 mb-6 text-lg">Todo mês eu produzo um novo ensaio fotográfico com diferentes temáticas e cenários, incluindo algumas fotos sem censura para meus assinantes.</p>
+                        <div class="flex space-x-4">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-pink-500">100%</div>
+                                <div class="text-gray-400">Original</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-pink-500">todo mes</div>
+                                <div class="text-gray-400">atualizado</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-pink-500">18+</div>
+                                <div class="text-gray-400">Adulto</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2">
+                        <div class="relative group">
+                            <div class="absolute inset-0 bg-pink-500 rounded-xl transform rotate-3 group-hover:rotate-6 transition duration-300"></div>
+                            <div class="relative bg-black rounded-xl overflow-hidden border-2 border-pink-500 hover-scale">
+                                <img src="https://media.discordapp.net/attachments/1154225171989803050/1369133358394642503/openart-image_qnhu1Wuu_1746330656188_raw_1.jpg?ex=681ac04d&is=68196ecd&hm=bfb45636544d8428326b035f6e4de0f2870e824b94f92306d38434c50c620685&=&format=webp&width=578&height=578" 
+                                     alt="Mell" 
+                                     class="w-full h-auto rounded-xl">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Content Section -->
+        <section id="content" class="py-20 bg-black">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold">
+                        <span class="text-pink-500">Conteúdo</span>
+                        <span class="text-white">Mensal</span>
+                    </h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto mt-4">Todo mês um novo ensaio fotográfico com diferentes temáticas e cenários</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Content Card 1 -->
+                    <div class="bg-gray-900 rounded-xl overflow-hidden hover-scale transition border-glow">
+                        <div class="h-48 bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
+                            <i class="fas fa-camera-retro text-6xl text-white opacity-80"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold text-pink-400 mb-3">Fotos Sensuais</h3>
+                            <p class="text-gray-300 mb-4">Ensaios profissionais mensais com poses e cenários variados, incluindo algumas fotos sem censura.</p>
+                            <ul class="text-gray-400 space-y-2 mb-6">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-pink-500 mr-2"></i>
+                                    Alta qualidade
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-pink-500 mr-2"></i>
+                                    Temáticas diferentes
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-pink-500 mr-2"></i>
+                                    Atualização mensal
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Content Card 2 -->
+                    <div class="bg-gray-900 rounded-xl overflow-hidden hover-scale transition border-glow">
+                        <div class="h-48 bg-gradient-to-r from-purple-600 to-pink-500 flex items-center justify-center">
+                            <i class="fas fa-images text-6xl text-white opacity-80"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold text-pink-400 mb-3">Conteúdo Completo</h3>
+                            <p class="text-gray-300 mb-4">Todo o conteúdo é postado de uma vez no início do mês para você aproveitar quando quiser.</p>
+                            <ul class="text-gray-400 space-y-2 mb-6">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-pink-500 mr-2"></i>
+                                    Conteúdo completo
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-pink-500 mr-2"></i>
+                                    Sem surpresas
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-pink-500 mr-2"></i>
+                                    Sem gotejamento
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Content Card 3 -->
+                    <div class="bg-gray-900 rounded-xl overflow-hidden hover-scale transition border-glow">
+                        <div class="h-48 bg-gradient-to-r from-pink-500 to-red-500 flex items-center justify-center">
+                            <i class="fas fa-heart text-6xl text-white opacity-80"></i>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="text-2xl font-bold text-pink-400 mb-3">Sem Exclusivos</h3>
+                            <p class="text-gray-300 mb-4">Todo mundo recebe o mesmo conteúdo completo, sem diferenciação entre assinantes.</p>
+                            <ul class="text-gray-400 space-y-2 mb-6">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-pink-500 mr-2"></i>
+                                    Conteúdo igual
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-pink-500 mr-2"></i>
+                                    Sem VIPs
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-pink-500 mr-2"></i>
+                                    Sem personalização
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section -->
+        <section id="gallery" class="py-20 bg-gradient-to-b from-black via-gray-900 to-black">
+            <div class="container mx-auto px-4">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold">
+                        <span class="text-pink-500">Galeria</span>
+                        <span class="text-white">Exclusiva</span>
+                    </h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto mt-4">Uma prévia do meu conteúdo premium e sensual (clique nas imagens para remover o blur)</p>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <!-- Gallery Item 1 -->
+                    <div class="group relative overflow-hidden rounded-lg hover-scale">
+                        <div class="image-container">
+                            <img src="https://cdn.discordapp.com/attachments/1154225171989803050/1369134724219539568/openart-image_w5yVe_x7_1746329424700_raw.jpg?ex=681ac193&is=68197013&hm=c29c92d0234b1ab23d67d87c79dac06f5a1423cb24475c5627af8fde881654e1&format=webp&width=578&height=578" 
+                                 alt="Gallery 1" 
+                                 class="w-full h-full object-cover blur-image"
+                                 onclick="this.classList.toggle('no-blur')">
+                            <div class="image-overlay">
+                                <span class="text-white font-medium">Ensaios Sensuais</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gallery Item 2 -->
+                    <div class="group relative overflow-hidden rounded-lg hover-scale">
+                        <div class="image-container">
+                            <img src="https://media.discordapp.net/attachments/1154225171989803050/1369134668699533443/openart-image_6PkKGeUD_1746329479307_raw.jpg?ex=681ac186&is=68197006&hm=87ebb27554c3cb12fd15c20a4e588b948ff4c019086066f199dc9d5b2dce916d&=&format=webp&width=578&height=578" 
+                                 alt="Gallery 2" 
+                                 class="w-full h-full object-cover blur-image"
+                                 onclick="this.classList.toggle('no-blur')">
+                            <div class="image-overlay">
+                                <span class="text-white font-medium">Fotos Íntimas</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gallery Item 3 -->
+                    <div class="group relative overflow-hidden rounded-lg hover-scale">
+                        <div class="image-container">
+                            <img src="https://media.discordapp.net/attachments/1154225171989803050/1369137036102996018/openart-image_ICSIkxIH_1746498038226_raw.jpg?ex=681ac3ba&is=6819723a&hm=3606688ead42a2560dd6cd9a02da135914052f76389f2caf1a7729a41e593193&=&format=webp&width=578&height=578" 
+                                 alt="Gallery 3" 
+                                 class="w-full h-full object-cover blur-image"
+                                 onclick="this.classList.toggle('no-blur')">
+                            <div class="image-overlay">
+                                <span class="text-white font-medium">Cenas Quentes</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Gallery Item 4 -->
+                    <div class="group relative overflow-hidden rounded-lg hover-scale">
+                        <div class="image-container">
+                            <img src="https://cdn.discordapp.com/attachments/1154225171989803050/1369138094925676544/openart-image_dUp1d0TD_1746498309699_raw.jpg?ex=681ac4b7&is=68197337&hm=e417ac3c6d2f4d4cff5a289315ee86033e9987eb66b297fedafd20b6abeadd7d&format=webp&width=578&height=578" 
+                                 alt="Gallery 4" 
+                                 class="w-full h-full object-cover blur-image"
+                                 onclick="this.classList.toggle('no-blur')">
+                            <div class="image-overlay">
+                                <span class="text-white font-medium">Produções Exclusivas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-12">
+                    <a href="#subscribe" class="inline-block bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-full transition hover-scale glow">
+                        Ver Mais Conteúdo
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Subscribe Section -->
+        <section id="subscribe" class="py-20 bg-black">
+            <div class="container mx-auto px-4">
+                <div class="max-w-3xl mx-auto bg-gray-900 rounded-xl overflow-hidden border-2 border-pink-500/30 hover:border-pink-500/50 transition">
+                    <div class="p-8 md:p-12">
+                        <div class="text-center mb-8">
+                            <h2 class="text-4xl font-bold">
+                                <span class="text-pink-500">Acesso</span>
+                                <span class="text-white">Exclusivo</span>
+                            </h2>
+                            <p class="text-gray-400 mt-4">Assine e tenha acesso a todo o conteúdo mensal de fotos sensuais</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                            <div class="bg-black/50 p-6 rounded-lg border border-pink-500/20 hover:border-pink-500/40 transition">
+                                <h3 class="text-xl font-bold text-pink-400 mb-3">Plano Mensal</h3>
+                                <div class="text-3xl font-bold mb-4">R$19,90<span class="text-sm text-gray-400">/mês</span></div>
+                                <ul class="text-gray-300 space-y-2">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-pink-500 mt-1 mr-2"></i>
+                                        <span>Acesso por 1 mês</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-pink-500 mt-1 mr-2"></i>
+                                        <span>Todo conteúdo mensal</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-pink-500 mt-1 mr-2"></i>
+                                        <span>Fotos sem censura</span>
+                                    </li>
+                                </ul>
+                                <button class="w-full mt-6 bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded transition">
+                                    Assinar
+                                </button>
+                            </div>
+                            
+                            <div class="bg-pink-900/20 p-6 rounded-lg border border-pink-500/40 hover:border-pink-500/60 transition glow">
+                                <div class="absolute top-0 right-0 bg-pink-500 text-xs font-bold px-2 py-1 rounded-bl-lg">ECONÔMICO</div>
+                                <h3 class="text-xl font-bold text-pink-400 mb-3">Plano Trimestral</h3>
+                                <div class="text-3xl font-bold mb-4">R$49,90<span class="text-sm text-gray-400">/3 meses</span></div>
+                                <ul class="text-gray-300 space-y-2">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-pink-500 mt-1 mr-2"></i>
+                                        <span>Acesso por 3 meses</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-pink-500 mt-1 mr-2"></i>
+                                        <span>Todo conteúdo mensal</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-pink-500 mt-1 mr-2"></i>
+                                        <span>Fotos sem censura</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check text-pink-500 mt-1 mr-2"></i>
+                                        <span>Economize R$10</span>
+                                    </li>
+                                </ul>
+                                <button class="w-full mt-6 bg-pink-600 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded transition">
+                                    Assinar
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="text-center text-gray-400 text-sm">
+                            <p class="mb-2">Cancelamento a qualquer momento. Conteúdo apenas para maiores de 18 anos.</p>
+                            <p>Clique nas imagens da galeria para remover o blur.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section (replacing Contact) -->
+        <section id="faq" class="py-20 bg-gradient-to-b from-black via-gray-900 to-black">
+            <div class="container mx-auto px-4">
+                <div class="max-w-4xl mx-auto">
+                    <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold">
+                        <span class="text-pink-500">Dúvidas</span>
+                        <span class="text-white">Frequentes</span>
+                    </h2>
+                    <p class="text-gray-400 max-w-2xl mx-auto mt-4">Tire suas dúvidas sobre o conteúdo e assinatura</p>
+                </div>
+                    
+                    <div class="space-y-6">
+                        <!-- FAQ Item 1 -->
+                        <div class="bg-black/50 p-6 rounded-lg border border-pink-500/20">
+                            <h3 class="text-xl font-bold text-pink-400 mb-3 flex justify-between items-center cursor-pointer faq-toggle">
+                                <span>Como funciona a assinatura?</span>
+                                <i class="fas fa-chevron-down transition-transform"></i>
+                            </h3>
+                            <div class="faq-content hidden mt-3">
+                                <p class="text-gray-300">Você assina por 1 mês ou 3 meses e tem acesso imediato a todo o conteúdo disponível no momento da assinatura, além de todo novo conteúdo postado durante o período da sua assinatura.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- FAQ Item 2 -->
+                        <div class="bg-black/50 p-6 rounded-lg border border-pink-500/20">
+                            <h3 class="text-xl font-bold text-pink-400 mb-3 flex justify-between items-center cursor-pointer faq-toggle">
+                                <span>Quando o conteúdo é atualizado?</span>
+                                <i class="fas fa-chevron-down transition-transform"></i>
+                            </h3>
+                            <div class="faq-content hidden mt-3">
+                                <p class="text-gray-300">Todo o conteúdo mensal é postado de uma só vez no início de cada mês. Não fazemos postagens semanais ou diárias.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- FAQ Item 3 -->
+                        <div class="bg-black/50 p-6 rounded-lg border border-pink-500/20">
+                            <h3 class="text-xl font-bold text-pink-400 mb-3 flex justify-between items-center cursor-pointer faq-toggle">
+                                <span>Há conteúdo exclusivo para assinantes VIP?</span>
+                                <i class="fas fa-chevron-down transition-transform"></i>
+                            </h3>
+                            <div class="faq-content hidden mt-3">
+                                <p class="text-gray-300">Não, todos os assinantes recebem exatamente o mesmo conteúdo. Não há diferenciação entre planos além do tempo de acesso.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- FAQ Item 4 -->
+                        <div class="bg-black/50 p-6 rounded-lg border border-pink-500/20">
+                            <h3 class="text-xl font-bold text-pink-400 mb-3 flex justify-between items-center cursor-pointer faq-toggle">
+                                <span>Posso cancelar a qualquer momento?</span>
+                                <i class="fas fa-chevron-down transition-transform"></i>
+                            </h3>
+                            <div class="faq-content hidden mt-3">
+                                <p class="text-gray-300">Sim, você pode cancelar a qualquer momento. Se cancelar no meio do período, continuará tendo acesso até o final do período contratado.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- FAQ Item 5 -->
+                        <div class="bg-black/50 p-6 rounded-lg border border-pink-500/20">
+                            <h3 class="text-xl font-bold text-pink-400 mb-3 flex justify-between items-center cursor-pointer faq-toggle">
+                                <span>O conteúdo inclui fotos sem censura?</span>
+                                <i class="fas fa-chevron-down transition-transform"></i>
+                            </h3>
+                            <div class="faq-content hidden mt-3">
+                                <p class="text-gray-300">Sim, o conteúdo mensal inclui algumas fotos sem censura, mas a maioria é sensual e não explícita.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-black py-12 border-t border-gray-800">
+            <div class="container mx-auto px-4">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="flex items-center mb-6 md:mb-0">
+                        <span class="text-2xl font-bold text-pink-500">MELL</span>
+                        <span class="text-2xl font-bold text-white">HOT</span>
+                    </div>
+                    
+                    <div class="flex space-x-6 mb-6 md:mb-0">
+                        <a href="#" class="text-gray-400 hover:text-pink-400 transition">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="text-gray-500 text-sm">
+                        <p>© 2023 Mellhot. Todos os direitos reservados.</p>
+                        <p class="mt-1">Conteúdo apenas para maiores de 18 anos.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Age verification logic
+        const ageGate = document.getElementById('age-gate');
+        const mainContent = document.getElementById('main-content');
+        const btnYes = document.getElementById('btn-yes');
+        const btnNo = document.getElementById('btn-no');
+        const minorMessage = document.getElementById('minor-message');
+        const timerElement = document.getElementById('timer');
+        
+        // Check if user is already verified
+        if(localStorage.getItem('ageVerified') === 'true') {
+            ageGate.style.display = 'none';
+            mainContent.style.display = 'block';
+            mainContent.classList.add('fade-in');
+        }
+        
+        // Yes button - user is adult
+        btnYes.addEventListener('click', function() {
+            localStorage.setItem('ageVerified', 'true');
+            ageGate.style.display = 'none';
+            mainContent.style.display = 'block';
+            mainContent.classList.add('fade-in');
+        });
+        
+        // No button - user is minor
+        btnNo.addEventListener('click', function() {
+            minorMessage.style.display = 'block';
+            btnYes.style.display = 'none';
+            btnNo.style.display = 'none';
+            
+            let seconds = 10;
+            timerElement.textContent = seconds;
+            
+            const countdown = setInterval(function() {
+                seconds--;
+                timerElement.textContent = seconds;
+                
+                if(seconds <= 0) {
+                    clearInterval(countdown);
+                    // In a real implementation, you would block the IP here
+                    // This is just a simulation
+                    ageGate.innerHTML = `
+                        <div class="text-center">
+                            <h2 class="text-3xl text-pink-500 mb-4">Acesso Bloqueado</h2>
+                            <p class="text-xl">Seu IP foi temporariamente bloqueado por 24 horas.</p>
+                            <p class="mt-4">Volte quando for maior de 18 anos, bebê.</p>
+                        </div>
+                    `;
+                }
+            }, 1000);
+        });
+
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                    
+                    // Scroll to target
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // FAQ toggle functionality
+        document.querySelectorAll('.faq-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const icon = this.querySelector('i');
+                
+                content.classList.toggle('hidden');
+                icon.classList.toggle('transform');
+                icon.classList.toggle('rotate-180');
+            });
+        });
+
+        // Add scroll animation
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fadeIn');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
